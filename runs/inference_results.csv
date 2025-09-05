@@ -1,0 +1,21 @@
+file,ground_truth,prediction,confidence
+plastics/000010_jpg.rf.23ee8d457c49d18556fb74d6787b7e90.jpg,plastics,class 2,0.9612165689468384
+plastics/000004_jpg.rf.774cd749f199562b2b4b6ae1ee5a1a8c.jpg,plastics,class 2,0.7881637215614319
+plastics/000027_jpg.rf.02f60308667eeadd7da6bd6f33d600c0.jpg,plastics,class 2,0.9516178965568542
+plastics/000006_jpg.rf.95b295bb08dd2e37881cfe0e8ae87a55.jpg,plastics,class 2,0.9987536668777466
+plastics/000003_JPG_jpg.rf.76801f72956551e288b84652ed7d2be1.jpg,plastics,class 2,0.9876927733421326
+organic/00vid-skorea-waste-21719-cover-superJumbo_jpg.rf.0638d4126c813c409a433c84ef4da040.jpg,organic,class 1,0.9947971701622009
+organic/2hfcw4d_jpg.rf.4905d1c342e38155c60b463f90e620f8.jpg,organic,class 1,0.9871223568916321
+organic/images99_jpg.rf.5ef3222c4ff3e7d738aa2ffeef6cf2c4.jpg,organic,class 1,0.998430073261261
+organic/images38_jpg.rf.c0c2dc998d1be66d20f44c8a74ccaf14.jpg,organic,class 1,0.9850815534591675
+organic/images57_jpg.rf.f73122eb3f5867e06cff26593ee0340a.jpg,organic,class 1,0.9977113008499146
+glass/glass262_jpg.rf.62167a7a71a72a887ea058059d474738.jpg,glass,class 0,0.9930248260498047
+glass/glass252_jpg.rf.6c0c97a4ae0c8eae3b8742d50267c7c1.jpg,glass,class 0,0.998936116695404
+glass/Cup_Glass069_jpg.rf.5237617a7df51732315dc2e832210a56.jpg,glass,class 0,0.9972731471061707
+glass/IMG_5042_JPG_jpg.rf.587fbf178376cc10c3741b32b411f3e1.jpg,glass,class 0,0.9933953881263733
+glass/Cup_Glass242_jpg.rf.0709d315ea97adbe0bef2085a6bbef38.jpg,glass,class 0,0.9995309114456177
+glass/Cup_Glass313_jpg.rf.37568a8c970168ca8741fbe86659a8ca.jpg,glass,class 0,0.9999303817749023
+glass/Cup_Glass135_jpg.rf.3d761d899a06099d3e02d65324b7f4fb.jpg,glass,class 0,0.9994034767150879
+glass/glass333_jpg.rf.3892463b774032079149d28bba5a0eda.jpg,glass,class 0,0.9997624754905701
+glass/glass401_jpg.rf.06e374c90eb021f5b6e616d024e6695e.jpg,glass,class 0,0.9601336717605591
+glass/Cup_Glass226_jpg.rf.7321d846db54397df02a4123ffc83498.jpg,glass,class 0,0.9996289014816284

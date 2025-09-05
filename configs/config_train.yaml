@@ -1,0 +1,24 @@
+dataset:
+  root: "dataset"
+  train_dir: "train"
+  val_dir: "val"
+  test_dir: "test"
+  img_size: 224
+  batch_size: 32
+  num_workers: 4
+
+train:
+  epochs: 50
+  lr: 0.001
+  optimizer: "adam"
+
+model:
+  name: "classifier"
+  backbone: 
+    type: "shufflenet_v2_x0_5"
+    pretrained: true
+    weights: "IMAGENET1K_V1"
+  head:
+    type: "gap_fc"
+    hidden_dim: null
+    num_classes: 10
