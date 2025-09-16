@@ -12,9 +12,6 @@ It can be applied to:
 - torchvision – for data augmentation and preprocessing
 - matplotlib / tqdm – for visualization and progress tracking
 
-**Quick Demo Result:**  
-After training on a sample dataset, the model achieves **98% accuracy**<img width="514" height="389" alt="Ảnh màn hình 2025-09-16 lúc 10 29 26" src="https://github.com/user-attachments/assets/f3905346-efe6-48b1-a7bf-211d7e5ec43b" />
-
 
 ---
 
@@ -40,6 +37,11 @@ You can use any image dataset (CIFAR-10, ImageNet subset, or your custom dataset
 
 ### Organize your dataset like this:
 
+## 📂 Dataset Structure
+
+Organize your dataset like this:
+
+```bash
 data/
 ├── train/
 │   ├── class1/
@@ -51,6 +53,7 @@ data/
     
 You can also automatically download or prepare the dataset:
   !python download_dataset.py
+```
 ## 4.  Training
 
 - Load training configuration from `configs/config_train.yaml`
@@ -79,39 +82,9 @@ You can also automatically download or prepare the dataset:
 ---
 
 ## 6. Inference
+Run inference on a single image or a folder:
+python inference.py --path Classify-Waste--1/test --weights runs/best_model.pth
 
-Perform inference on single images or an entire folder.
-
-**Steps:**
-1. **Load Config & Model**
-   - Load `config_train.yaml` for model params
-   - Initialize model with correct `num_classes`
-   - Load trained weights (`runs/best_model.pth`)
-   - Set model to `eval` mode
-
-2. **Preprocessing**
-   - Open image with `PIL`
-   - Resize to `(224, 224)`
-   - Convert to tensor and normalize
-   - Add batch dimension (`unsqueeze(0)`)
-
-3. **Prediction**
-   - Forward pass through model
-   - Apply `softmax` to get probabilities
-   - Select class with highest confidence
-   - Map index → class name from config (if available)
-
-4. **Visualization (Optional)**
-   - Show image with predicted label and confidence
-   - Print results to console
-
-5. **Batch Mode**
-   - If a folder is given, loop through all images
-   - Store results (`file`, `ground_truth`, `prediction`, `confidence`) in a list
-
-6. **Save Results**
-   - Export predictions to `runs/inference_results.csv`
-   - Use for later analysis or reporting
 ## 7. Results & Performance
 Metrics reported:
 Training loss & accuracy per epoch
@@ -126,6 +99,87 @@ Accuracy: ~98%
   - **ONNX**: `torch.onnx.export`
   - **TFLite**: via ONNX → TFLite converter
   - **NCNN**: via ONNX → ncnn converter
+  - import torch
+import os
+import argparse
+import yaml
+import subprocess
+
+from models.classifier import Classifier  # <-- import model của bạn
+
+def export_model(pth_path, output_dir, input_shape):
+    os.makedirs(output_dir, exist_ok=True)
+
+    # Load config
+    with open("configs/config_train.yaml", "r") as f:
+        cfg = yaml.safe_load(f)
+
+    # Load model
+    device = "cpu"
+    model = Classifier(cfg)
+    model.load_state_dict(torch.load(pth_path, map_location=device))
+    model.eval()
+
+    dummy_input = torch.randn(*input_shape)
+
+    # 1️⃣ TorchScript
+    traced = torch.jit.trace(model, dummy_input)
+    torchscript_path = os.path.join(output_dir, "model_torchscript.pt")
+    traced.save(torchscript_path)
+    print(f"[✔] Saved TorchScript → {torchscript_path}")
+
+    # 2️⃣ ONNX
+    onnx_path = os.path.join(output_dir, "model.onnx")
+    torch.onnx.export(
+        model,
+        dummy_input,
+        onnx_path,
+        input_names=['input'],
+        output_names=['output'],
+        opset_version=11
+    )
+    print(f"[✔] Saved ONNX → {onnx_path}")
+
+    # 3️⃣ TFLite (tùy chọn)
+    tflite_path = os.path.join(output_dir, "model.tflite")
+    try:
+        import onnx
+        import onnx_tf.backend as backend
+        import tensorflow as tf
+
+        model_onnx = onnx.load(onnx_path)
+        tf_rep = backend.prepare(model_onnx)
+        tf_rep.export_graph(os.path.join(output_dir, "model_tf"))
+
+        converter = tf.lite.TFLiteConverter.from_saved_model(os.path.join(output_dir, "model_tf"))
+        tflite_model = converter.convert()
+        with open(tflite_path, "wb") as f:
+            f.write(tflite_model)
+        print(f"[✔] Saved TFLite → {tflite_path}")
+    except Exception as e:
+        print(f"[⚠] TFLite conversion failed: {e}")
+
+    # 4️⃣ NCNN (tùy chọn)
+    try:
+        subprocess.run(["onnx2ncnn", onnx_path, 
+                        os.path.join(output_dir, "model.param"), 
+                        os.path.join(output_dir, "model.bin")], check=True)
+        print(f"[✔] Saved NCNN model → model.param + model.bin")
+    except FileNotFoundError:
+        print("[⚠] NCNN conversion skipped (onnx2ncnn not found)")
+### Cách chạy:
+cd ClassifyModel
+python tools/convert_model.py --pth runs/last_model.pth --out tools/converted --shape 1 3 224 224
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--pth", type=str, required=True, help="Path to .pth model")
+    parser.add_argument("--out", type=str, default="converted", help="Output folder")
+    parser.add_argument("--shape", type=int, nargs="+", default=[1, 3, 224, 224], help="Input shape")
+    args = parser.parse_args()
+
+    export_model(args.pth, args.out, tuple(args.shape))
+
 
 This allows deploying the model on mobile or embedded devices.
 
@@ -135,3 +189,4 @@ This allows deploying the model on mobile or embedded devices.
 - Author: [Lê Trương Uyển Nhi]  
 - Email: [ltuyennhi11b1@gmail.com]  
 - GitHub: [github.com/NhibltoTec]
+
