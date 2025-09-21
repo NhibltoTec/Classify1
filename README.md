@@ -54,37 +54,30 @@ data/
 You can also automatically download or prepare the dataset:
   !python download_dataset.py
 ```
-## 4.  Training
+## 4. Training
 
-- Load training configuration from `configs/config_train.yaml`
-- Initialize model (`Classifier`), optimizer (Adam / SGD), and loss function (CrossEntropyLoss)
-- Create `DataLoader` for train/val datasets
-- Run training loop for `epochs` with:
-  - Forward pass
-  - Loss calculation
-  - Backpropagation & optimizer step
-- Validate after each epoch and log results
-- Save the best model weights to `runs/best_model.pth`
-- Track training progress with `tqdm` and optionally TensorBoard logs
+1. Edit `configs/config_train.yaml`:
+   - Set `dataset.root` to your dataset folder (e.g., `Classify-Waste--1`)
+   - Update `model.head.num_classes` to match the number of classes
 
-
+2. Run training:
+```bash
+python train.py
+```
 ## 5. Evaluation
-
-- Load trained model checkpoint (e.g. `runs/best_model.pth`)
-- Create validation/test `DataLoader`
-- Switch model to evaluation mode (`model.eval()`)
-- Compute metrics:
-  - Accuracy
-  - Precision, Recall, F1-score (optional)
-  - Confusion matrix (optional, visualize with matplotlib)
-- Print and log results for analysis
+run:
+```bash
+python validate.py
+```
 
 ---
 
 ## 6. Inference
 Run inference on a single image or a folder:
+**Example (folder):**
+```bash
 python inference.py --path Classify-Waste--1/test --weights runs/best_model.pth
-
+```
 ## 7. Results & Performance
 Metrics reported:
 Training loss & accuracy per epoch
@@ -189,5 +182,6 @@ This allows deploying the model on mobile or embedded devices.
 - Author: [Lê Trương Uyển Nhi]  
 - Email: [ltuyennhi11b1@gmail.com]  
 - GitHub: [github.com/NhibltoTec]
+
 
 
