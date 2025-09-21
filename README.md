@@ -190,3 +190,4 @@ This allows deploying the model on mobile or embedded devices.
 - Email: [ltuyennhi11b1@gmail.com]  
 - GitHub: [github.com/NhibltoTec]
 
+
